@@ -10,6 +10,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 /* Displays the four navigation tabs and highlights the active one
@@ -41,7 +43,10 @@ fun DejaYouBottomBar(navController: NavHostController) {
     val backStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry.value?.destination?.route
 
-    NavigationBar {
+    NavigationBar (
+        containerColor = Color.Transparent,
+        tonalElevation = 0.dp
+    ){
         screens.forEachIndexed { index, screen ->
 
             NavigationBarItem(
