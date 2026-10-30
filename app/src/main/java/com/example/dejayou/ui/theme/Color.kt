@@ -2,10 +2,14 @@ package com.example.dejayou.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val RoyalPurple = Color(0xFF5815A8)// Buttons & Primary actions
+val ChampagnePeach = Color(0xFFFFE4D0) //Main Background
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+//Light Background Gradient=================================
+val PeachBase = Color(0xFFD99C87) //Gradient Base
+val PeachHighlight = Color(0xFFFBE0CA) //Gradient Highlight
+val RoseCopper = Color(0xFFC78A79) //Gradient Shadow
+//==========================================================
+
+val Lavender = Color(0xFFB89AF7)//Accent
+val DeepPlum = Color(0xFF351C4D) //Dark Text
