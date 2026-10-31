@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dejayou.ui.theme.DejaYouTheme
 import com.example.dejayou.ui.theme.DejaYouBackground
+import com.example.dejayou.navigation.DejaYouNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DejaYouTheme {
                 DejaYouBackground {
-                    Greeting()
+                    DejaYouNavGraph()
                 }
             }
         }
