@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.dejayou.ui.theme.DejaYouTheme
+import com.example.dejayou.ui.theme.DejaYouBackground
+import com.example.dejayou.navigation.DejaYouNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,11 +21,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DejaYouTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                DejaYouBackground {
+                    DejaYouNavGraph()
                 }
             }
         }
@@ -31,9 +30,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "DejaYOU",
         modifier = modifier
     )
 }
@@ -42,6 +41,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     DejaYouTheme {
-        Greeting("Android")
+        DejaYouBackground {
+            Greeting()
+        }
     }
 }
