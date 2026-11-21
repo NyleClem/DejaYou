@@ -31,6 +31,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,14 +47,16 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 /**
  * Displays the Home screen with recent Moments, a reflection prompt,
- * and actions for accessing Settings and creating Moments.
+ * and actions for accessing Settings and creating Moments.NC
  */
 @Composable
 fun HomeScreen(onSettingsClick: () -> Unit) {
-
+    //Controls whether the Create Moment bottom sheet is displayed.NC
+    var showCreateMomentSheet by remember {
+        mutableStateOf(false)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,8 +70,14 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
         DailyReflectionCard()
         CreateMomentButton(
             onCreateClick = {
-                //TODO: Open the Create Moment bottom sheet
-
+                showCreateMomentSheet = true
+            }
+        )
+    }
+    if (showCreateMomentSheet) {
+        CreateMomentSheet(
+            onDismiss = {
+                showCreateMomentSheet = false
             }
         )
     }
@@ -190,10 +202,11 @@ fun MomentCard(
 
 /**
  * Displays a two-column preview of recent Moments.
- * Uses sample data until Moment database is implemented.
+ * Uses sample data until the Home screen is connected to the Moment database.
  */
 @Composable
 fun RecentMoments() {
+
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -336,4 +349,3 @@ fun CreateMomentButton(onCreateClick: () -> Unit) {
         )
     }
 }
-
