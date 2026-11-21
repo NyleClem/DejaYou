@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 
 /**
  * Displays the bottom sheet for creating a new Moment.NC
- * Provides fields for the title, content, and mood selection.NC
+ * Provides fields for the title, content, and mood selection with input validation.NC
  *
  * @param onDismiss Callback used to close the bottom sheet.NC
  */
@@ -40,6 +40,9 @@ fun CreateMomentSheet(
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var selectedMood by remember { mutableStateOf("Happy") }
+    //Track validation errors for the title and content
+    var titleError by remember { mutableStateOf(false) }
+    var contentError by remember { mutableStateOf(false) }
     val moods = listOf("Happy", "Nostalgic", "Hopeful", "Sad")
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -60,24 +63,41 @@ fun CreateMomentSheet(
 
             OutlinedTextField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = {
+                    title = it
+                    titleError = title.isBlank()
+                },
                 label = { Text("Title") },
                 placeholder = { Text("Give this moment a title...") },
                 singleLine = true,
+                isError = titleError,
+                supportingText = {
+                    if (titleError) {
+                        Text("Title is required")
+                    }
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
-
             )
 
             OutlinedTextField(
                 value = content,
-                onValueChange = { content = it },
+                onValueChange = {
+                    content = it
+                    contentError = content.isBlank()
+                },
                 label = { Text("Your Moment") },
                 placeholder = { Text("What's on your mind?") },
                 minLines = 4,
                 maxLines = 8,
+                isError = contentError,
+                supportingText = {
+                    if (contentError) {
+                        Text("Moment content is required")
+                    }
+                },
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,7 +136,12 @@ fun CreateMomentSheet(
 
                 Button(
                     onClick = {
-                        // save moment here
+                        //Check both fields before saving a Moment
+                        titleError = title.isBlank()
+                        contentError = content.isBlank()
+                        if (!titleError && !contentError) {
+                            //  Save the Moment
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {
