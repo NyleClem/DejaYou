@@ -46,13 +46,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dejayou.ui.viewmodel.MomentViewModel
 
 /**
  * Displays the Home screen with recent Moments, a reflection prompt,
  * and actions for accessing Settings and creating Moments.NC
  */
 @Composable
-fun HomeScreen(onSettingsClick: () -> Unit) {
+fun HomeScreen(
+    onSettingsClick: () -> Unit,
+    momentViewModel: MomentViewModel
+    ) {
     //Controls whether the Create Moment bottom sheet is displayed.NC
     var showCreateMomentSheet by remember {
         mutableStateOf(false)
@@ -77,8 +81,9 @@ fun HomeScreen(onSettingsClick: () -> Unit) {
     if (showCreateMomentSheet) {
         CreateMomentSheet(
             onDismiss = {
-                showCreateMomentSheet = false
-            }
+                showCreateMomentSheet = false },
+            momentViewModel = momentViewModel
+
         )
     }
 }

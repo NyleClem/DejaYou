@@ -24,6 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.dejayou.ui.viewmodel.MomentViewModel
+import com.example.dejayou.data.local.Moment
 
 /**
  * Displays the bottom sheet for creating a new Moment.NC
@@ -34,7 +36,8 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateMomentSheet(
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    momentViewModel: MomentViewModel
 ) {
     //Track the user input while the bottom sheet is open
     var title by remember { mutableStateOf("") }
@@ -140,7 +143,16 @@ fun CreateMomentSheet(
                         titleError = title.isBlank()
                         contentError = content.isBlank()
                         if (!titleError && !contentError) {
-                            //  Save the Moment
+                            //Create a Moment from the validated user input.NC
+                            val moment = Moment(
+                                title = title.trim(),
+                                content = content.trim(),
+                                moodColor = selectedMood
+                            )
+                            //  Close the sheet after the db insert succeeds. NC
+                            momentViewModel.insertMoment(moment){
+                                onDismiss()
+                            }
                         }
                     },
                     modifier = Modifier.weight(1f)
