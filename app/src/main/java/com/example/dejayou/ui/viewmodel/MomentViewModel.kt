@@ -10,8 +10,11 @@ import kotlinx.coroutines.launch
 class MomentViewModel(private val repository: MomentRepository) : ViewModel() {//TF
     val allMoments = repository.getAllMoments()//TF
 
-    fun insertMoment(moment: Moment){//TF
-        viewModelScope.launch { repository.insertMoment(moment) } //TF
+    fun insertMoment(moment: Moment, onSuccess: () -> Unit) { //TF
+        viewModelScope.launch {
+            repository.insertMoment(moment)
+            onSuccess() // NC: Notify the UI after the Moment is saved.
+        }
     }
     fun updateMoment(moment: Moment){
         viewModelScope.launch { repository.updateMoment(moment) } //TF

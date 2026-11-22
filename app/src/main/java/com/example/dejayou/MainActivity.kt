@@ -14,15 +14,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.dejayou.ui.theme.DejaYouTheme
 import com.example.dejayou.ui.theme.DejaYouBackground
 import com.example.dejayou.navigation.DejaYouNavGraph
+import androidx.activity.viewModels
+import com.example.dejayou.data.local.DatabaseProvider
+import com.example.dejayou.data.local.MomentRepository
+import com.example.dejayou.ui.viewmodel.MomentViewModel
+import com.example.dejayou.ui.viewmodel.MomentViewModelFactory
 
 class MainActivity : ComponentActivity() {
+    // Create the ViewModel using the Room database and repository. NC
+    private val momentViewModel: MomentViewModel by viewModels {
+        val database = DatabaseProvider.getDatabase(applicationContext)
+        val repository = MomentRepository(database.momentDao())
+        MomentViewModelFactory(repository)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DejaYouTheme {
                 DejaYouBackground {
-                    DejaYouNavGraph()
+                    DejaYouNavGraph(momentViewModel = momentViewModel)
                 }
             }
         }

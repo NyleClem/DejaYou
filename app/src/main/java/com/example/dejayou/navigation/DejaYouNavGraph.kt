@@ -15,12 +15,15 @@ import com.example.dejayou.screens.HomeScreen
 import com.example.dejayou.screens.MomentsScreen
 import com.example.dejayou.screens.RemindersScreen
 import com.example.dejayou.screens.SettingsScreen
+import com.example.dejayou.ui.viewmodel.MomentViewModel
 /* Defines the apps navigation graph and manages the bottom bar
  *The bottom bar only appears on the four main screens
  * NC
  */
 @Composable
-fun DejaYouNavGraph() {
+fun DejaYouNavGraph(
+    momentViewModel: MomentViewModel
+) {
 
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -47,7 +50,8 @@ fun DejaYouNavGraph() {
                 HomeScreen(
                     onSettingsClick = {
                         navController.navigate(SETTINGS)
-                    }
+                    },
+                    momentViewModel = momentViewModel
                 )
             }
 
