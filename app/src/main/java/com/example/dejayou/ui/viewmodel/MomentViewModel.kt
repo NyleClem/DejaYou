@@ -22,4 +22,7 @@ class MomentViewModel(private val repository: MomentRepository) : ViewModel() {/
     fun deleteMoment(moment: Moment){
         viewModelScope.launch { repository.deleteMoment(moment) } //TF
     }
+    fun deleteAllMoments(){
+        viewModelScope.launch { repository.deleteAllMoments() } //TF
+    }
 }

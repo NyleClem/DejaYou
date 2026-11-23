@@ -18,4 +18,8 @@ class MomentRepository(private val momentDao: MomentDAO) {
     suspend fun deleteMoment(moment: Moment){
         momentDao.deleteMoment(moment)
     }
+
+    suspend fun deleteAllMoments(){
+        momentDao.deleteAllMoments()
+    }
 }

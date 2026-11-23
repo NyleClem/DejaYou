@@ -19,4 +19,7 @@ interface MomentDAO {//TF
     @Delete
     suspend fun deleteMoment(moment: Moment) //TF
 
+    @Query("DELETE FROM moments")
+    suspend fun deleteAllMoments() //TF
+
 }

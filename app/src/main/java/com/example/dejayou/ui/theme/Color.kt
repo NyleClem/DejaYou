@@ -11,5 +11,13 @@ val PeachHighlight = Color(0xFFFBE0CA) //Gradient Highlight
 val RoseCopper = Color(0xFFC78A79) //Gradient Shadow
 //==========================================================
 
+//Dark Background Gradient==================================
+val MidnightNavy = Color(0xFF101329)
+val MidnightIndigo = Color(0xFF25204A)
+val MidnightViolet = Color(0xFF493776)
+val MoonLavender = Color(0xFFC6B3ED)
+val DreamyWhite =  Color(0xFFF2EDFF)
+//==========================================================
+
 val Lavender = Color(0xFFB89AF7)//Accent
 val DeepPlum = Color(0xFF351C4D) //Dark Text
