@@ -63,7 +63,9 @@ fun DejaYouNavGraph(
             }
 
             composable(MOMENTS) {
-                MomentsScreen()
+                MomentsScreen(
+                    momentViewModel = momentViewModel
+                )
             }
 
             composable(CALENDAR) {
