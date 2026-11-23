@@ -22,7 +22,14 @@ import com.example.dejayou.ui.viewmodel.MomentViewModel
  */
 @Composable
 fun DejaYouNavGraph(
-    momentViewModel: MomentViewModel
+    momentViewModel: MomentViewModel,
+    isDarkTheme:Boolean, //TF
+    onThemeChange: (Boolean) -> Unit, //TF
+    hasCameraAccess: Boolean,
+    onCameraAC: (Boolean) -> Unit,
+    hasGalleryAccess: Boolean,
+    onGalleryAC: (Boolean) -> Unit,
+    onDeleteAllMoments: () -> Unit
 ) {
 
     val navController = rememberNavController()
@@ -73,7 +80,14 @@ fun DejaYouNavGraph(
                 SettingsScreen(
                     onBackClick = {
                         navController.popBackStack()
-                    }
+                    },
+                    isDarkTheme = isDarkTheme,
+                    onThemeChange = onThemeChange,
+                    hasCameraAccess = hasCameraAccess,
+                    onCameraAC = onCameraAC,
+                    hasGalleryAccess = hasGalleryAccess,
+                    onGalleryAC = onGalleryAC,
+                    onDeleteAllMoments = onDeleteAllMoments
                 )
             }
         }

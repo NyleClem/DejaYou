@@ -12,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Lavender,
-    secondary = PeachBase,
-    tertiary = PeachHighlight,
-    background = DeepPlum,
-    onBackground = ChampagnePeach
+    primary = MoonLavender,
+    secondary = MidnightViolet,
+    tertiary = Lavender,
+    background = MidnightNavy,
+    onBackground = DreamyWhite,
+    surface = MidnightIndigo,
+    onSurface = DreamyWhite
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -25,22 +27,11 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Lavender,
     background = ChampagnePeach,
     onBackground = DeepPlum
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
 @Composable
 fun DejaYouTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    darkTheme: Boolean = false,
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
