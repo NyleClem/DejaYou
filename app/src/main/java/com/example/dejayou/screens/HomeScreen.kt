@@ -1,6 +1,8 @@
 
 package com.example.dejayou.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,10 +20,12 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,7 +34,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -46,19 +54,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dejayou.ui.viewmodel.MomentViewModel
-import androidx.compose.runtime.collectAsState
 import com.example.dejayou.data.local.Moment
+import com.example.dejayou.ui.viewmodel.MomentViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import androidx.compose.material.icons.filled.Image
-import android.graphics.Bitmap
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
-import androidx.compose.foundation.Image
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 
 /**
  * Displays the Home screen with recent Moments, a reflection prompt,
@@ -165,18 +165,31 @@ fun MomentCard(
     icon: ImageVector,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
+    onClick: (()-> Unit)? = null,
     momentImage: coil3.Bitmap? = null,
-) {
+){
     // Controls if the attached picture is displayed. NC
     var showImageDialog by remember {
         mutableStateOf(false)
     }
     Card(
-        modifier = modifier.height(200.dp),
+        modifier = modifier
+            .height(200.dp)
+            /**add another modifier to make the card
+             * clickable only when an onClick callback is provided
+             * NC
+            */
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable { onClick() }
+                } else {
+                    Modifier
+                }
+            ),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor
-        ),
-        shape = RoundedCornerShape(20.dp)
+        )
     ) {
         Column(
             modifier = Modifier
@@ -277,7 +290,7 @@ fun MomentCard(
 }
 
 /**
- * Displays a two-column preview of recent Moments.
+ * Display a two-column preview of recent Moments.
  */
 @Composable
 fun RecentMoments(moments: List<Moment>) {
