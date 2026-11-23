@@ -52,6 +52,13 @@ import com.example.dejayou.data.local.Moment
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.material.icons.filled.Image
+import android.graphics.Bitmap
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.compose.foundation.Image
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 
 /**
  * Displays the Home screen with recent Moments, a reflection prompt,
@@ -157,8 +164,13 @@ fun MomentCard(
     emotion: String,
     icon: ImageVector,
     backgroundColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    momentImage: coil3.Bitmap? = null,
 ) {
+    // Controls if the attached picture is displayed. NC
+    var showImageDialog by remember {
+        mutableStateOf(false)
+    }
     Card(
         modifier = modifier.height(200.dp),
         colors = CardDefaults.cardColors(
@@ -205,13 +217,63 @@ fun MomentCard(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Text(
-                    text = "$date · $emotion",
-                    fontSize = 11.sp
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "$date · $emotion",
+                        fontSize = 11.sp
+                    )
+
+                    // Show the picture icon only when an image is attached. NC
+                    if (momentImage != null) {
+                        IconButton(
+                            onClick = {
+                                showImageDialog = true
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Image,
+                                contentDescription = "View attached picture"
+                            )
+                        }
+                    }
+                }
             }
         }
     }
+    // Display the attached picture when the image icon is clicked. NC
+    if (showImageDialog && momentImage != null) {
+        AlertDialog(
+            onDismissRequest = {
+                showImageDialog = false
+            },
+            title = {
+                Text("Attached Picture")
+            },
+            text = {
+                Image(
+                    bitmap = momentImage.asImageBitmap(),
+                    contentDescription = "Picture attached to $title",
+                    modifier = Modifier.fillMaxWidth(),
+                    contentScale = ContentScale.Fit
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showImageDialog = false
+                    }
+                ) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+
+
 }
 
 /**
@@ -263,7 +325,8 @@ fun RecentMoments(moments: List<Moment>) {
                         emotion = moment.moodColor,
                         icon = emotionIcon,
                         backgroundColor = cardColor,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        momentImage = moment.momentImage
                     )
                 }
 
