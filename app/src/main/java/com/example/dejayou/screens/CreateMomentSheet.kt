@@ -1,5 +1,6 @@
 package com.example.dejayou.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,14 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.dejayou.ui.viewmodel.MomentViewModel
 import com.example.dejayou.data.local.Moment
+import com.example.dejayou.ui.viewmodel.MomentViewModel
+import kotlinx.coroutines.launch
 
 /**
  * Displays the bottom sheet for creating a new Moment.NC
@@ -46,6 +50,13 @@ fun CreateMomentSheet(
     //Track validation errors for the title and content
     var titleError by remember { mutableStateOf(false) }
     var contentError by remember { mutableStateOf(false) }
+    // Track the selected picture until the Moment is saved. NC
+    var selectedImageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var imageError by remember { mutableStateOf(false) }
     val moods = listOf("Happy", "Nostalgic", "Hopeful", "Sad")
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -124,6 +135,28 @@ fun CreateMomentSheet(
                     Text(text = mood)
                 }
             }
+            // Reuse the Photo Picker to select a picture. NC
+            MomentImagePicker(
+                onImageSelected = { uri ->
+                    selectedImageUri = uri
+                    imageError = false
+                }
+            ) { onPickImage ->
+                OutlinedButton(
+                    onClick = onPickImage,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 12.dp)
+                ) {
+                    Text("Attach Picture")
+                }
+            }
+            if (imageError) {
+                Text(
+                    text = "Unable to load the selected picture. Please choose another.",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,15 +176,29 @@ fun CreateMomentSheet(
                         titleError = title.isBlank()
                         contentError = content.isBlank()
                         if (!titleError && !contentError) {
-                            //Create a Moment from the validated user input.NC
-                            val moment = Moment(
-                                title = title.trim(),
-                                content = content.trim(),
-                                moodColor = selectedMood
-                            )
-                            //  Close the sheet after the db insert succeeds. NC
-                            momentViewModel.insertMoment(moment){
-                                onDismiss()
+                            coroutineScope.launch {
+                                // Load the picture before creating the Moment. NC
+                                val selectedBitmap = selectedImageUri?.let { uri ->
+                                    loadMomentImage(context, uri)
+                                }
+
+                                // Don't just save a text-only Moment if its selected image failed. NC
+                                if (selectedImageUri != null && selectedBitmap == null) {
+                                    imageError = true
+                                    return@launch
+                                }
+
+                                // Save the Moment with its picture if one was selected. NC
+                                val moment = Moment(
+                                    title = title.trim(),
+                                    content = content.trim(),
+                                    moodColor = selectedMood,
+                                    momentImage = selectedBitmap
+                                )
+
+                                momentViewModel.insertMoment(moment) {
+                                    onDismiss()
+                                }
                             }
                         }
                     },
