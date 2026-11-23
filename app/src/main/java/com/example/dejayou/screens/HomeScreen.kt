@@ -47,6 +47,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dejayou.ui.viewmodel.MomentViewModel
+import androidx.compose.runtime.collectAsState
+import com.example.dejayou.data.local.Moment
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Displays the Home screen with recent Moments, a reflection prompt,
@@ -61,6 +66,10 @@ fun HomeScreen(
     var showCreateMomentSheet by remember {
         mutableStateOf(false)
     }
+    // Observe saved Moments so the Home screen updates automatically. NC
+    val moments by momentViewModel.allMoments.collectAsState(
+        initial = emptyList()
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -70,7 +79,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         HomeHeader(onSettingsClick)
-        RecentMoments()
+        RecentMoments(moments = moments.take(4))
         DailyReflectionCard()
         CreateMomentButton(
             onCreateClick = {
@@ -207,10 +216,9 @@ fun MomentCard(
 
 /**
  * Displays a two-column preview of recent Moments.
- * Uses sample data until the Home screen is connected to the Moment database.
  */
 @Composable
-fun RecentMoments() {
+fun RecentMoments(moments: List<Moment>) {
 
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -226,52 +234,44 @@ fun RecentMoments() {
             fontSize = 14.sp
         )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            MomentCard(
-                title = "A Beautiful Day",
-                description = "Everything seemed to fall into place today...",
-                date = "Oct 30, 2026",
-                emotion = "Happy",
-                icon = Icons.Filled.WbSunny,
-                backgroundColor = Color(0xFFFFF0CA),
-                modifier = Modifier.weight(1f)
-            )
 
-            MomentCard(
-                title = "Missing the Old Days",
-                description = "Sometimes I wish I could go back and experience those moments again.",
-                date = "Oct 27, 2026",
-                emotion = "Nostalgic",
-                icon = Icons.Filled.Favorite,
-                backgroundColor = Color(0xFFE9DDFB),
-                modifier = Modifier.weight(1f)
-            )
-        }
+        // Display saved Moments in rows of two. NC
+        moments.chunked(2).forEach { rowMoments ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                rowMoments.forEach { moment ->
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            MomentCard(
-                title = "A Fresh Start",
-                description = "I'm finally starting to see the progress I've been working toward.",
-                date = "Oct 24, 2026",
-                emotion = "Hopeful",
-                icon = Icons.Filled.Star,
-                backgroundColor = Color(0xFFDDF2E9),
-                modifier = Modifier.weight(1f)
-            )
+                    val (emotionIcon, cardColor) = when (moment.moodColor) {
+                        "Happy" -> Icons.Filled.WbSunny to Color(0xFFFFF0CA)
+                        "Nostalgic" -> Icons.Filled.Favorite to Color(0xFFE9DDFB)
+                        "Hopeful" -> Icons.Filled.Star to Color(0xFFDDF2E9)
+                        "Sad" -> Icons.Filled.Cloud to Color(0xFFDDEAFB)
+                        else -> Icons.Filled.Star to Color(0xFFFFF0CA)
+                    }
 
-            MomentCard(
-                title = "One of Those Days",
-                description = "Nothing really went the way I wanted, but tomorrow is another chance.",
-                date = "Oct 20, 2026",
-                emotion = "Sad",
-                icon = Icons.Filled.Cloud,
-                backgroundColor = Color(0xFFDDEAFB),
-                modifier = Modifier.weight(1f)
-            )
+                    val formattedDate = SimpleDateFormat(
+                        "MMM d, yyyy",
+                        Locale.getDefault()
+                    ).format(Date(moment.createdAt))
+
+                    MomentCard(
+                        title = moment.title,
+                        description = moment.content,
+                        date = formattedDate,
+                        emotion = moment.moodColor,
+                        icon = emotionIcon,
+                        backgroundColor = cardColor,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                // Keep a single card at half the row width. NC
+                if (rowMoments.size == 1) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
         }
     }
 }
